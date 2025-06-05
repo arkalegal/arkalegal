@@ -1,6 +1,9 @@
 // Upload form functionality
 import { addProject } from './gallery.js';
 
+// Secret key for admin access (in a real app, this would be server-side)
+const ADMIN_KEY = 'myPortfolio2025';
+
 export function initUploadForm() {
   const uploadBtn = document.getElementById('upload-btn');
   const uploadModal = document.getElementById('upload-modal');
@@ -9,8 +12,46 @@ export function initUploadForm() {
   const imageInput = document.getElementById('project-image');
   const imagePreviewContainer = document.querySelector('.image-preview-container');
   
+  // Hide upload button by default
+  uploadBtn.style.display = 'none';
+  
+  // Add keyboard shortcut listener for admin access
+  let keySequence = '';
+  const secretCode = ADMIN_KEY;
+  
+  document.addEventListener('keydown', (e) => {
+    keySequence += e.key;
+    
+    // Only keep the last N characters where N is the length of the secret code
+    if (keySequence.length > secretCode.length) {
+      keySequence = keySequence.slice(-secretCode.length);
+    }
+    
+    // Check if the sequence matches the secret code
+    if (keySequence === secretCode) {
+      uploadBtn.style.display = 'block';
+      keySequence = ''; // Reset sequence
+      
+      // Store admin status
+      sessionStorage.setItem('isAdmin', 'true');
+      
+      // Hide button after 5 seconds
+      setTimeout(() => {
+        uploadBtn.style.display = 'none';
+      }, 5000);
+    }
+  });
+  
+  // Check admin status on page load
+  if (sessionStorage.getItem('isAdmin') === 'true') {
+    uploadBtn.style.display = 'block';
+  }
+  
   // Show upload modal when clicking the upload button
   uploadBtn.addEventListener('click', () => {
+    if (sessionStorage.getItem('isAdmin') !== 'true') {
+      return;
+    }
     uploadModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
@@ -80,7 +121,6 @@ function handleImagePreview(e) {
         <span class="remove-image">&times;</span>
       `;
       
-      // Remove image functionality
       preview.querySelector('.remove-image').addEventListener('click', () => {
         preview.remove();
         updateFileInput();
@@ -115,6 +155,10 @@ function updateFileInput() {
 // Function to handle form submission
 function handleFormSubmit(e) {
   e.preventDefault();
+  
+  if (sessionStorage.getItem('isAdmin') !== 'true') {
+    return;
+  }
   
   // Get form data
   const formData = new FormData(e.target);
@@ -186,6 +230,10 @@ function showNotification(message) {
 
 // Function to edit project
 export function editProject(projectId) {
+  if (sessionStorage.getItem('isAdmin') !== 'true') {
+    return;
+  }
+  
   const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
   const project = projects.find(p => p.id === projectId);
   
