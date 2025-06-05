@@ -59,12 +59,7 @@ function renderProjects(projectsToRender) {
     const editButton = projectCard.querySelector('.edit-project');
     editButton.addEventListener('click', (e) => {
       e.stopPropagation();
-      const code = prompt('Please enter the security code to edit:');
-      if (code === '589426') {
-        editProject(project.id);
-      } else {
-        alert('Invalid security code');
-      }
+      editProject(project.id);
     });
     
     // Add delay for staggered animation
