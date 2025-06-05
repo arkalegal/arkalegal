@@ -32,29 +32,6 @@ export function initGallery() {
   });
 }
 
-// Add new project
-export function addProject(projectData) {
-  // Get existing projects
-  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
-  
-  // Create new project with unique ID
-  const newProject = {
-    ...projectData,
-    id: crypto.randomUUID()
-  };
-  
-  // Add to projects array
-  projects.push(newProject);
-  
-  // Save to localStorage
-  localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-  
-  // Re-render the gallery
-  renderProjects(projects);
-  
-  return newProject;
-}
-
 // Render projects to the grid
 function renderProjects(projectsToRender) {
   const projectsGrid = document.querySelector('.projects-grid');
