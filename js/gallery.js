@@ -74,7 +74,7 @@ function renderProjects(projectsToRender) {
       <div class="project-overlay">
         <h3 class="project-title">${project.title}</h3>
         <p class="project-category">${project.category}</p>
-        <input type="text" class="secret-input" placeholder="Project description..." style="width: 100%; margin-bottom: 10px; padding: 5px;">
+        <input type="text" class="secret-input" placeholder="Enter code to edit..." style="width: 100%; margin-bottom: 10px; padding: 5px;">
         <button class="edit-project" style="display: none;">Edit</button>
       </div>
     `;
@@ -94,6 +94,9 @@ function renderProjects(projectsToRender) {
     // Add edit button click handler
     editButton.addEventListener('click', (e) => {
       e.stopPropagation();
+      const uploadModal = document.getElementById('upload-modal');
+      const modalTitle = uploadModal.querySelector('h2');
+      modalTitle.textContent = 'Edit Project';
       editProject(project.id);
     });
     

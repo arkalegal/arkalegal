@@ -1,9 +1,6 @@
 // Upload form functionality
 import { addProject } from './gallery.js';
 
-// Secret key for admin access (in a real app, this would be server-side)
-const ADMIN_KEY = 'myPortfolio2025';
-
 export function initUploadForm() {
   const uploadBtn = document.getElementById('upload-btn');
   const uploadModal = document.getElementById('upload-modal');
@@ -11,31 +8,9 @@ export function initUploadForm() {
   const uploadForm = document.getElementById('upload-form');
   const imageInput = document.getElementById('project-image');
   const imagePreviewContainer = document.querySelector('.image-preview-container');
-  const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
   
   // Always hide upload button initially
   uploadBtn.style.display = 'none';
-  
-  // Track input in contact form fields
-  contactInputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      const value = e.target.value;
-      
-      // Check if input contains the secret code
-      if (value.includes(ADMIN_KEY)) {
-        // Show button temporarily
-        uploadBtn.style.display = 'block';
-        
-        // Hide button after 5 seconds
-        setTimeout(() => {
-          uploadBtn.style.display = 'none';
-        }, 5000);
-        
-        // Clear the secret code from the input
-        e.target.value = value.replace(ADMIN_KEY, '');
-      }
-    });
-  });
   
   // Show upload modal when clicking the upload button
   uploadBtn.addEventListener('click', () => {
@@ -180,6 +155,11 @@ export function editProject(projectId) {
   
   if (!project) return;
   
+  // Show modal
+  const uploadModal = document.getElementById('upload-modal');
+  uploadModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
   // Populate form
   document.getElementById('project-title').value = project.title;
   document.getElementById('project-category').value = project.category;
@@ -207,9 +187,4 @@ export function editProject(projectId) {
     
     previewContainer.appendChild(preview);
   });
-  
-  // Show modal
-  const uploadModal = document.getElementById('upload-modal');
-  uploadModal.classList.add('active');
-  document.body.style.overflow = 'hidden';
 }
