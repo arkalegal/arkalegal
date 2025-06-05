@@ -64,6 +64,12 @@
   transform: translateY(0);
 }
 
+.auth-title {
+  font-size: 2.4rem;
+  margin-bottom: 24px;
+  color: var(--text-color);
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;

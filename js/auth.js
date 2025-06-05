@@ -81,9 +81,9 @@ export function initAuth() {
     authModal.className = 'auth-modal';
     
     authModal.innerHTML = `
-      <div class="modal-content">
+      <div class="modal-content auth-modal-content">
         <button class="close-modal">&times;</button>
-        <h2>Sign In / Sign Up</h2>
+        <h2 class="auth-title">Sign In / Sign Up</h2>
         <form id="auth-form" class="auth-form">
           <div class="form-group">
             <label for="auth-email">Email</label>
