@@ -2,7 +2,6 @@ import { supabase } from './supabase';
 
 export function initGallery() {
   loadProjects();
-  initProjectModal();
 }
 
 async function loadProjects() {
