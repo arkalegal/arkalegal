@@ -66,6 +66,7 @@ function closeUploadModal() {
 function handleImagePreview(e) {
   const files = e.target.files;
   const previewContainer = document.querySelector('.image-preview-container');
+  previewContainer.innerHTML = ''; // Clear existing previews
   
   Array.from(files).forEach((file) => {
     if (!file.type.startsWith('image/')) return;
@@ -113,13 +114,23 @@ function updateFileList() {
 async function handleFormSubmit(e) {
   e.preventDefault();
   
-  const formData = new FormData(e.target);
-  const files = e.target.querySelector('#project-image').files;
-  
   try {
+    const formData = new FormData(e.target);
+    const files = Array.from(e.target.querySelector('#project-image').files);
+    
+    if (!files.length) {
+      throw new Error('Please upload at least one image');
+    }
+
+    // Show loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = 'Uploading...';
+    submitBtn.disabled = true;
+
     // Upload images to Supabase Storage
     const imageUrls = await Promise.all(
-      Array.from(files).map(file => uploadImage(file))
+      files.map(file => uploadImage(file))
     );
     
     const projectData = {
@@ -127,13 +138,14 @@ async function handleFormSubmit(e) {
       category: formData.get('category'),
       description: formData.get('description'),
       caseStudy: formData.get('caseStudy'),
-      images: imageUrls
+      images: imageUrls,
+      user_id: (await supabase.auth.getUser()).data.user.id
     };
     
+    // Validate all required fields
     if (!projectData.title || !projectData.category || !projectData.description || 
-        !projectData.caseStudy || projectData.images.length === 0) {
-      alert('Please fill in all fields and upload at least one image.');
-      return;
+        !projectData.caseStudy || !projectData.images.length) {
+      throw new Error('Please fill in all required fields');
     }
     
     const savedProject = await addProject(projectData);
@@ -144,7 +156,12 @@ async function handleFormSubmit(e) {
     }
   } catch (error) {
     console.error('Error saving project:', error);
-    showNotification('Error saving project. Please try again.');
+    showNotification(error.message || 'Error saving project. Please try again.');
+  } finally {
+    // Reset loading state
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Add Project';
+    submitBtn.disabled = false;
   }
 }
 
