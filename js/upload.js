@@ -1,6 +1,7 @@
 import { addProject } from './gallery.js';
 import { supabase } from './supabase.js';
 import { uploadImage } from './supabase.js';
+import { toggleAuthForms } from './auth.js';
 
 export function initUploadForm() {
   const uploadBtn = document.getElementById('upload-btn');
@@ -15,7 +16,6 @@ export function initUploadForm() {
     
     if (!user) {
       // Show auth modal if not signed in
-      const { toggleAuthForms } = await import('./auth.js');
       toggleAuthForms(true);
       return;
     }

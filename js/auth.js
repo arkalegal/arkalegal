@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js';
 
 // Show/hide auth forms
-function toggleAuthForms(show) {
+export function toggleAuthForms(show) {
   const authModal = document.getElementById('auth-modal');
   if (show) {
     authModal.classList.add('active');
@@ -124,7 +124,6 @@ export function initAuth() {
   
   // Export functions for use in other modules
   return {
-    toggleAuthForms,
     showNotification
   };
 }
