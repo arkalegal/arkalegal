@@ -1,4 +1,5 @@
 // Gallery JavaScript
+import { editProject } from './upload.js';
 
 // Initialize the gallery
 export function initGallery() {
@@ -50,9 +51,16 @@ function renderProjects(projectsToRender) {
       <div class="project-overlay">
         <h3 class="project-title">${project.title}</h3>
         <p class="project-category">${project.category}</p>
-        <button class="edit-project" onclick="editProject('${project.id}')">Edit</button>
+        <button class="edit-project">Edit</button>
       </div>
     `;
+    
+    // Add edit button click handler
+    const editButton = projectCard.querySelector('.edit-project');
+    editButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      editProject(project.id);
+    });
     
     // Add delay for staggered animation
     setTimeout(() => {
