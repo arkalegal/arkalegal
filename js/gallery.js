@@ -74,24 +74,12 @@ function renderProjects(projectsToRender) {
       <div class="project-overlay">
         <h3 class="project-title">${project.title}</h3>
         <p class="project-category">${project.category}</p>
-        <input type="text" class="secret-input" placeholder="Project description..." style="width: 100%; margin-bottom: 10px; padding: 5px;">
-        <button class="edit-project" style="display: none;">Edit</button>
+        <button class="edit-project">Edit</button>
       </div>
     `;
     
-    // Add secret code check
-    const secretInput = projectCard.querySelector('.secret-input');
-    const editButton = projectCard.querySelector('.edit-project');
-    
-    secretInput.addEventListener('input', (e) => {
-      if (e.target.value.includes('AB5694')) {
-        editButton.style.display = 'block';
-        // Remove the code from input
-        e.target.value = e.target.value.replace('AB5694', '');
-      }
-    });
-    
     // Add edit button click handler
+    const editButton = projectCard.querySelector('.edit-project');
     editButton.addEventListener('click', (e) => {
       e.stopPropagation();
       showSecurityDialog(project.id);
@@ -99,7 +87,7 @@ function renderProjects(projectsToRender) {
     
     // Add click event for project details
     projectCard.addEventListener('click', (e) => {
-      if (!e.target.classList.contains('edit-project') && !e.target.classList.contains('secret-input')) {
+      if (!e.target.classList.contains('edit-project')) {
         showProjectDetails(project);
       }
     });
