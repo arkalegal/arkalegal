@@ -3,6 +3,7 @@ import { initGallery } from './gallery.js';
 import { initProjectModal } from './project.js';
 import { initUploadForm } from './upload.js';
 import { initAnimations } from './animations.js';
+import { initAuth } from './auth.js';
 
 // DOM elements
 const header = document.querySelector('header');
@@ -15,6 +16,7 @@ const cursorFollower = document.querySelector('.cursor-follower');
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize modules
+  initAuth();
   initGallery();
   initProjectModal();
   initUploadForm();
