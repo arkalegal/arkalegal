@@ -1,7 +1,6 @@
 import { addProject } from './gallery.js';
 import { supabase } from './supabase.js';
 import { uploadImage } from './supabase.js';
-import { toggleAuthForms } from './auth.js';
 
 export function initUploadForm() {
   const uploadBtn = document.getElementById('upload-btn');
@@ -11,17 +10,41 @@ export function initUploadForm() {
   const imageInput = document.getElementById('project-image');
   const imagePreviewContainer = document.querySelector('.image-preview-container');
   
-  uploadBtn.addEventListener('click', async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+  uploadBtn.addEventListener('click', () => {
+    // Create and show the sign in button modal first
+    const signInModal = document.createElement('div');
+    signInModal.className = 'sign-in-modal';
+    signInModal.innerHTML = `
+      <div class="modal-content">
+        <button class="close-modal">&times;</button>
+        <button class="sign-in-btn">Sign In to Upload</button>
+      </div>
+    `;
     
-    if (!user) {
-      // Show auth modal if not signed in
-      toggleAuthForms(true);
-      return;
-    }
-    
-    uploadModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    document.body.appendChild(signInModal);
+    setTimeout(() => signInModal.classList.add('active'), 0);
+
+    // Handle sign in button click
+    const signInBtn = signInModal.querySelector('.sign-in-btn');
+    signInBtn.addEventListener('click', () => {
+      signInModal.remove();
+      showAuthModal();
+    });
+
+    // Handle close button
+    const closeBtn = signInModal.querySelector('.close-modal');
+    closeBtn.addEventListener('click', () => {
+      signInModal.classList.remove('active');
+      setTimeout(() => signInModal.remove(), 300);
+    });
+
+    // Close on outside click
+    signInModal.addEventListener('click', (e) => {
+      if (e.target === signInModal) {
+        signInModal.classList.remove('active');
+        setTimeout(() => signInModal.remove(), 300);
+      }
+    });
   });
   
   closeModalBtn.addEventListener('click', closeUploadModal);
@@ -37,19 +60,77 @@ export function initUploadForm() {
   });
   
   imageInput.addEventListener('change', handleImagePreview);
-  
   uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
-async function checkAuthStatus() {
-  const { data: { user } } = await supabase.auth.getUser();
-  const uploadBtn = document.getElementById('upload-btn');
+function showAuthModal() {
+  const authModal = document.createElement('div');
+  authModal.className = 'auth-modal';
+  authModal.innerHTML = `
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h2>Sign In</h2>
+      <form class="auth-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" required>
+        </div>
+        <div class="auth-buttons">
+          <button type="submit" class="sign-in-submit">Sign In</button>
+          <button type="button" class="sign-up-toggle">Create Account</button>
+        </div>
+      </form>
+    </div>
+  `;
   
-  if (user) {
-    uploadBtn.style.display = 'block';
-  } else {
-    uploadBtn.style.display = 'none';
-  }
+  document.body.appendChild(authModal);
+  setTimeout(() => authModal.classList.add('active'), 0);
+
+  // Handle form submission
+  const form = authModal.querySelector('form');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      authModal.classList.remove('active');
+      setTimeout(() => authModal.remove(), 300);
+      showNotification('Signed in successfully!');
+      
+      // Show upload modal
+      const uploadModal = document.getElementById('upload-modal');
+      uploadModal.classList.add('active');
+    } catch (error) {
+      showNotification(error.message);
+    }
+  });
+
+  // Handle close button
+  const closeBtn = authModal.querySelector('.close-modal');
+  closeBtn.addEventListener('click', () => {
+    authModal.classList.remove('active');
+    setTimeout(() => authModal.remove(), 300);
+  });
+
+  // Close on outside click
+  authModal.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+      authModal.classList.remove('active');
+      setTimeout(() => authModal.remove(), 300);
+    }
+  });
 }
 
 function closeUploadModal() {
@@ -64,7 +145,7 @@ function closeUploadModal() {
 function handleImagePreview(e) {
   const files = e.target.files;
   const previewContainer = document.querySelector('.image-preview-container');
-  previewContainer.innerHTML = ''; // Clear existing previews
+  previewContainer.innerHTML = '';
   
   Array.from(files).forEach((file) => {
     if (!file.type.startsWith('image/')) return;
@@ -113,7 +194,6 @@ async function handleFormSubmit(e) {
   e.preventDefault();
   
   try {
-    // Check if user is authenticated
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
@@ -127,13 +207,11 @@ async function handleFormSubmit(e) {
       throw new Error('Please upload at least one image');
     }
 
-    // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Uploading...';
     submitBtn.disabled = true;
 
-    // Upload images to Supabase Storage
     const imageUrls = await Promise.all(
       files.map(file => uploadImage(file))
     );
@@ -147,7 +225,6 @@ async function handleFormSubmit(e) {
       user_id: user.id
     };
     
-    // Validate all required fields
     if (!projectData.title || !projectData.category || !projectData.description || 
         !projectData.caseStudy || !projectData.images.length) {
       throw new Error('Please fill in all required fields');
@@ -158,15 +235,12 @@ async function handleFormSubmit(e) {
     if (savedProject) {
       closeUploadModal();
       showNotification('Project added successfully!');
-      
-      // Refresh the gallery to show the new project
       window.location.reload();
     }
   } catch (error) {
     console.error('Error saving project:', error);
     showNotification(error.message || 'Error saving project. Please try again.');
   } finally {
-    // Reset loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.textContent = 'Add Project';
     submitBtn.disabled = false;
