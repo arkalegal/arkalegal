@@ -3,205 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portfolio | Creative Graphic Designer</title>
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/components.css">
-  <link rel="stylesheet" href="css/animations.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <title>Creative Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-  <div class="cursor"></div>
-  <div class="cursor-follower"></div>
-
-  <header>
-    <div class="container">
-      <div class="logo">
-        <a href="#" class="logo-link">Arka Biswas</a>
-      </div>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#" class="active" data-section="gallery">Work</a></li>
-          <li><a href="#" data-section="about">About</a></li>
-          <li><a href="#" data-section="contact">Contact</a></li>
-        </ul>
-        <div class="menu-toggle">
-          <span></span>
-          <span></span>
-          <span></span>
+<body class="bg-zinc-950 text-zinc-200 font-space-grotesk">
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 w-full z-50 mix-blend-difference">
+    <div class="container mx-auto px-4 py-6">
+      <div class="flex justify-between items-center">
+        <a href="#" class="text-2xl font-bold tracking-tighter">STUDIO</a>
+        <div class="hidden md:flex space-x-8">
+          <a href="#work" class="hover:text-zinc-400 transition-colors">Work</a>
+          <a href="#about" class="hover:text-zinc-400 transition-colors">About</a>
+          <a href="#contact" class="hover:text-zinc-400 transition-colors">Contact</a>
+          <button id="auth-btn" class="hover:text-zinc-400 transition-colors">Sign In</button>
         </div>
-      </nav>
+        <button class="md:hidden" id="menu-btn">Menu</button>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <section id="hero" class="hero">
-      <div class="container">
-        <h1 class="reveal-text">Creating visual stories that resonate</h1>
-        <p class="subtitle reveal-text delay-1">Graphic design portfolio showcasing creative concepts and innovative solutions</p>
-        <a href="#gallery" class="scroll-down">
-          <span class="scroll-text">Scroll to explore</span>
-          <span class="scroll-icon"></span>
-        </a>
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="fixed inset-0 bg-zinc-950 z-40 hidden">
+    <div class="flex flex-col items-center justify-center h-full space-y-8 text-2xl">
+      <a href="#work" class="hover:text-zinc-400 transition-colors">Work</a>
+      <a href="#about" class="hover:text-zinc-400 transition-colors">About</a>
+      <a href="#contact" class="hover:text-zinc-400 transition-colors">Contact</a>
+      <button id="mobile-auth-btn" class="hover:text-zinc-400 transition-colors">Sign In</button>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="h-screen flex items-center justify-center relative overflow-hidden">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-6xl md:text-8xl font-bold leading-tight tracking-tighter mb-8">
+        <span class="block reveal-text">Creative</span>
+        <span class="block reveal-text">Direction &</span>
+        <span class="block reveal-text">Design</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto mb-12 reveal-text">
+        We craft immersive digital experiences that connect brands with their audience
+      </p>
+      <div class="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <div class="scroll-indicator"></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="gallery" class="gallery section">
-      <div class="container">
-        <div class="section-header">
-          <h2>Featured Work</h2>
-          <div class="filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="branding">Branding</button>
-            <button class="filter-btn" data-filter="print">Print</button>
-            <button class="filter-btn" data-filter="digital">Digital</button>
-            <button class="filter-btn" data-filter="illustration">Illustration</button>
-          </div>
-        </div>
-        
-        <div class="projects-grid">
-          <!-- Projects will be dynamically loaded here -->
-        </div>
+  <!-- Work Section -->
+  <section id="work" class="py-24">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-end mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold tracking-tighter">Selected Work</h2>
+        <button id="upload-btn" class="hidden px-6 py-3 bg-zinc-900 hover:bg-zinc-800 transition-colors rounded-full">
+          Upload Project
+        </button>
       </div>
-    </section>
-
-    <section id="about" class="about section">
-      <div class="container">
-        <div class="about-content">
-          <div class="about-text">
-            <h2>About Me</h2>
-            <p>I'm a graphic designer with a passion for creating visual solutions that communicate effectively and leave a lasting impression. With over 8 years of experience in both digital and print design, I focus on crafting unique visual identities and creative concepts that help brands stand out.</p>
-            <p>My approach combines strategic thinking with artistic expression, resulting in designs that are not only visually appealing but also purposeful and meaningful.</p>
-            
-            <div class="skills">
-              <h3>Specialties</h3>
-              <ul class="skills-list">
-                <li>Brand Identity</li>
-                <li>Editorial Design</li>
-                <li>Packaging</li>
-                <li>Digital Illustration</li>
-                <li>UI/UX Design</li>
-                <li>Motion Graphics</li>
-              </ul>
-            </div>
-          </div>
-          <div class="about-image">
-            <img src="https://images.pexels.com/photos/5212320/pexels-photo-5212320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Designer at work">
-          </div>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="projects-grid">
+        <!-- Projects will be loaded here -->
       </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="contact" class="contact section">
-      <div class="container">
-        <h2>Let's Work Together</h2>
-        <div class="contact-content">
-          <div class="contact-info">
-            <p>I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
-            <div class="contact-details">
-              <div class="contact-item">
-                <span class="contact-label">Email</span>
-                <a href="mailto:hello@annawalker.com" class="contact-value">hello@annawalker.com</a>
-              </div>
-              <div class="contact-item">
-                <span class="contact-label">Based in</span>
-                <span class="contact-value">San Francisco, CA</span>
-              </div>
-              <div class="social-links">
-                <a href="#" class="social-link">Instagram</a>
-                <a href="#" class="social-link">Behance</a>
-                <a href="#" class="social-link">LinkedIn</a>
-                <a href="#" class="social-link">Dribbble</a>
-              </div>
-            </div>
-          </div>
-          <form id="contact-form" class="contact-form">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-              <label for="subject">Subject</label>
-              <input type="text" id="subject" name="subject" required>
-            </div>
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" required></textarea>
-            </div>
-            <button type="submit" class="btn submit-btn">Send Message</button>
-          </form>
+  <!-- About Section -->
+  <section id="about" class="py-24 bg-zinc-900">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-8">About Studio</h2>
+          <p class="text-lg text-zinc-400 mb-6">
+            We are a creative studio specializing in design and digital experiences. Our approach combines strategic thinking with artistic expression, resulting in meaningful and impactful solutions.
+          </p>
+          <p class="text-lg text-zinc-400">
+            With a focus on innovation and attention to detail, we help brands stand out in today's digital landscape.
+          </p>
+        </div>
+        <div class="relative">
+          <img src="https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg" alt="Team at work" class="rounded-2xl">
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <div id="project-modal" class="project-modal">
-      <div class="modal-content">
-        <button class="close-modal">&times;</button>
-        <div class="project-details">
+  <!-- Contact Section -->
+  <section id="contact" class="py-24">
+    <div class="container mx-auto px-4">
+      <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-16 text-center">Get in Touch</h2>
+      <div class="max-w-2xl mx-auto">
+        <form id="contact-form" class="space-y-8">
+          <div>
+            <label for="name" class="block text-sm font-medium mb-2">Name</label>
+            <input type="text" id="name" name="name" required
+              class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium mb-2">Email</label>
+            <input type="email" id="email" name="email" required
+              class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+          </div>
+          <div>
+            <label for="message" class="block text-sm font-medium mb-2">Message</label>
+            <textarea id="message" name="message" rows="6" required
+              class="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600"></textarea>
+          </div>
+          <button type="submit"
+            class="w-full bg-zinc-200 text-zinc-900 py-4 rounded-lg font-medium hover:bg-zinc-300 transition-colors">
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md">
+      <div class="bg-zinc-900 rounded-2xl p-8">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-2xl font-bold">Sign In</h3>
+          <button class="text-zinc-400 hover:text-zinc-200" id="close-auth">×</button>
+        </div>
+        <form id="auth-form" class="space-y-6">
+          <div>
+            <label for="auth-email" class="block text-sm font-medium mb-2">Email</label>
+            <input type="email" id="auth-email" required
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+          </div>
+          <div>
+            <label for="auth-password" class="block text-sm font-medium mb-2">Password</label>
+            <input type="password" id="auth-password" required
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+          </div>
+          <button type="submit"
+            class="w-full bg-zinc-200 text-zinc-900 py-3 rounded-lg font-medium hover:bg-zinc-300 transition-colors">
+            Sign In
+          </button>
+          <button type="button" id="toggle-auth"
+            class="w-full bg-transparent border border-zinc-700 py-3 rounded-lg font-medium hover:bg-zinc-800 transition-colors">
+            Create Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload Modal -->
+  <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
+      <div class="bg-zinc-900 rounded-2xl p-8">
+        <div class="flex justify-between items-center mb-8">
+          <h3 class="text-2xl font-bold">Upload Project</h3>
+          <button class="text-zinc-400 hover:text-zinc-200" id="close-upload">×</button>
+        </div>
+        <form id="upload-form" class="space-y-6">
+          <input type="hidden" id="project-id">
+          <div>
+            <label for="project-title" class="block text-sm font-medium mb-2">Project Title</label>
+            <input type="text" id="project-title" required
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+          </div>
+          <div>
+            <label for="project-description" class="block text-sm font-medium mb-2">Description</label>
+            <textarea id="project-description" rows="3" required
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600"></textarea>
+          </div>
+          <div>
+            <label for="project-category" class="block text-sm font-medium mb-2">Category</label>
+            <select id="project-category" required
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-zinc-600">
+              <option value="">Select a category</option>
+              <option value="branding">Branding</option>
+              <option value="web">Web Design</option>
+              <option value="print">Print</option>
+              <option value="motion">Motion</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2">Project Images</label>
+            <div class="border-2 border-dashed border-zinc-700 rounded-lg p-8 text-center">
+              <input type="file" id="project-images" multiple accept="image/*" class="hidden">
+              <label for="project-images"
+                class="cursor-pointer inline-flex items-center justify-center px-6 py-3 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors">
+                Choose Files
+              </label>
+              <p class="mt-2 text-sm text-zinc-400">or drag and drop your files here</p>
+            </div>
+            <div id="image-preview" class="grid grid-cols-3 gap-4 mt-4"></div>
+          </div>
+          <button type="submit"
+            class="w-full bg-zinc-200 text-zinc-900 py-3 rounded-lg font-medium hover:bg-zinc-300 transition-colors">
+            Upload Project
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project Modal -->
+  <div id="project-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl">
+      <div class="bg-zinc-900 rounded-2xl p-8">
+        <button class="absolute top-4 right-4 text-zinc-400 hover:text-zinc-200 text-2xl" id="close-project">×</button>
+        <div id="project-details" class="space-y-8">
           <!-- Project details will be loaded here -->
         </div>
       </div>
     </div>
+  </div>
 
-    <div id="upload-modal" class="upload-modal">
-      <div class="modal-content">
-        <button class="close-modal">&times;</button>
-        <h2>Add New Project</h2>
-        <form id="upload-form" class="upload-form">
-          <input type="hidden" id="project-id" name="id">
-          <div class="form-group">
-            <label for="project-title">Project Title</label>
-            <input type="text" id="project-title" name="title" required>
-          </div>
-          <div class="form-group">
-            <label for="project-category">Category</label>
-            <select id="project-category" name="category" required>
-              <option value="">Select a category</option>
-              <option value="branding">Branding</option>
-              <option value="print">Print</option>
-              <option value="digital">Digital</option>
-              <option value="illustration">Illustration</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="project-description">Short Description</label>
-            <textarea id="project-description" name="description" required></textarea>
-          </div>
-          <div class="form-group">
-            <label for="project-case-study">Case Study</label>
-            <textarea id="project-case-study" name="caseStudy" required placeholder="Describe your creative process, inspiration, and challenges..."></textarea>
-          </div>
-          <div class="form-group">
-            <label for="project-image">Project Images</label>
-            <input type="file" id="project-image" name="images" accept="image/*" multiple required>
-            <div class="image-preview-container"></div>
-          </div>
-          <button type="submit" class="btn submit-btn">Add Project</button>
-        </form>
-      </div>
-    </div>
-  </main>
-
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-left">
-          <span class="copyright">&copy; 2025 Anna Walker. All rights reserved.</span>
-        </div>
-        <div class="footer-right">
-          <button id="upload-btn" class="upload-btn">Upload New Project</button>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="js/main.js" type="module"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
