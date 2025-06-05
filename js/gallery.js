@@ -82,7 +82,10 @@ function renderProjects(projectsToRender) {
       <div class="project-overlay">
         <h3 class="project-title">${project.title}</h3>
         <p class="project-category">${project.category}</p>
-        <button class="edit-project" style="display: none;">Edit</button>
+        <div class="project-actions" style="display: flex; gap: 8px;">
+          <button class="edit-project" style="display: none;">Edit</button>
+          <button class="delete-project" style="display: none; background-color: #ff4444;">Delete</button>
+        </div>
       </div>
     `;
     
@@ -92,6 +95,16 @@ function renderProjects(projectsToRender) {
       e.stopPropagation();
       editProject(project.id);
     });
+
+    // Add delete button click handler
+    const deleteButton = projectCard.querySelector('.delete-project');
+    deleteButton.style.display = editButton.style.display; // Match edit button visibility
+    deleteButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+        deleteProject(project.id);
+      }
+    });
     
     // Add delay for staggered animation
     setTimeout(() => {
@@ -100,7 +113,7 @@ function renderProjects(projectsToRender) {
     
     // Add click event
     projectCard.addEventListener('click', (e) => {
-      if (!e.target.classList.contains('edit-project')) {
+      if (!e.target.classList.contains('edit-project') && !e.target.classList.contains('delete-project')) {
         showProjectDetails(project);
       }
     });
@@ -150,6 +163,20 @@ function showProjectDetails(project) {
   document.body.style.overflow = 'hidden';
 }
 
+// Function to delete a project
+function deleteProject(projectId) {
+  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+  const updatedProjects = projects.filter(p => p.id !== projectId);
+  localStorage.setItem('portfolioProjects', JSON.stringify(updatedProjects));
+  
+  // Re-render the gallery
+  const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+  renderProjects(activeFilter === 'all' ? updatedProjects : updatedProjects.filter(p => p.category === activeFilter));
+  
+  // Show notification
+  showNotification('Project deleted successfully!');
+}
+
 // Function to add a new project
 export function addProject(project) {
   // Get existing projects
@@ -179,4 +206,24 @@ export function addProject(project) {
   }
   
   return project;
+}
+
+// Function to show notification
+function showNotification(message) {
+  const notification = document.createElement('div');
+  notification.classList.add('notification');
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  // Show notification
+  requestAnimationFrame(() => {
+    notification.classList.add('show');
+  });
+  
+  // Remove notification
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
 }
