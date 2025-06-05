@@ -232,12 +232,17 @@ header .container {
 footer {
   padding: 48px 0;
   border-top: 1px solid var(--border-color);
+  background-color: var(--background-color);
+  position: relative;
+  width: 100%;
+  bottom: 0;
 }
 
 .footer-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 24px;
 }
 
 .copyright {
@@ -246,16 +251,18 @@ footer {
 }
 
 .upload-btn {
-  padding: 8px 16px;
+  padding: 12px 24px;
   background-color: var(--accent-color);
   color: white;
   border-radius: 4px;
   font-weight: 600;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .upload-btn:hover {
-  background-color: darken(var(--accent-color), 10%);
+  background-color: var(--accent-color);
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 /* Custom Cursor */
