@@ -17,6 +17,7 @@ export function initAuth() {
         if (confirm('Are you sure you want to sign out?')) {
           await supabase.auth.signOut();
           showNotification('Signed out successfully');
+          window.location.reload();
         }
       } else {
         authModal.classList.remove('hidden');
@@ -48,6 +49,8 @@ export function initAuth() {
         });
         if (error) throw error;
         showNotification('Account created successfully! You can now sign in.');
+        isSignUp = false; // Switch back to sign in mode
+        toggleAuthBtn.click(); // Update UI to show sign in form
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -55,11 +58,26 @@ export function initAuth() {
         });
         if (error) throw error;
         showNotification('Signed in successfully!');
+        window.location.reload();
       }
       authModal.classList.add('hidden');
       authForm.reset();
     } catch (error) {
       showNotification(error.message);
+    }
+  });
+
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !authModal.classList.contains('hidden')) {
+      authModal.classList.add('hidden');
+    }
+  });
+
+  // Close on outside click
+  authModal.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+      authModal.classList.add('hidden');
     }
   });
 }
