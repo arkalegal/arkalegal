@@ -30,6 +30,37 @@ export function initGallery() {
       }
     });
   });
+
+  // Add secret code detection
+  let buffer = '';
+  let timeout;
+
+  document.addEventListener('keydown', (e) => {
+    buffer += e.key;
+    
+    // Remove old characters if buffer gets too long
+    if (buffer.length > 10) {
+      buffer = buffer.slice(-10);
+    }
+    
+    // Check if buffer contains secret code
+    if (buffer.includes('AB7215')) {
+      // Clear buffer
+      buffer = '';
+      
+      // Show edit buttons
+      const editButtons = document.querySelectorAll('.edit-project');
+      editButtons.forEach(btn => {
+        btn.style.display = 'block';
+        
+        // Hide after 10 seconds
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          btn.style.display = 'none';
+        }, 10000);
+      });
+    }
+  });
 }
 
 // Render projects to the grid
@@ -51,7 +82,7 @@ function renderProjects(projectsToRender) {
       <div class="project-overlay">
         <h3 class="project-title">${project.title}</h3>
         <p class="project-category">${project.category}</p>
-        <button class="edit-project">Edit</button>
+        <button class="edit-project" style="display: none;">Edit</button>
       </div>
     `;
     
