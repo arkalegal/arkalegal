@@ -140,15 +140,18 @@ header .container {
 }
 
 .theme-toggle {
-  position: relative;
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 56px;
   height: 28px;
-  margin-left: 32px;
   padding: 4px;
   border-radius: 14px;
   background-color: var(--toggle-bg);
   cursor: pointer;
   transition: background-color 0.3s ease;
+  z-index: 1001;
 }
 
 .toggle-circle {
