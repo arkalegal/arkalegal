@@ -152,26 +152,31 @@ function showProjectDetails(project) {
 
 // Function to add a new project
 export function addProject(project) {
-  // Generate a new ID
+  // Get existing projects
   const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
-  const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
   
-  // Create new project object
-  const newProject = {
-    id: newId,
-    ...project
-  };
+  if (project.id) {
+    // If project has an ID, it's an edit - replace the old project
+    const index = projects.findIndex(p => p.id === project.id);
+    if (index !== -1) {
+      projects[index] = project;
+    }
+  } else {
+    // Generate a new ID for new projects
+    const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
+    project.id = newId;
+    projects.unshift(project);
+  }
   
-  // Add to projects array
-  projects.unshift(newProject);
+  // Save updated projects array
   localStorage.setItem('portfolioProjects', JSON.stringify(projects));
   
   // Re-render the gallery
   const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
   
-  if (activeFilter === 'all' || activeFilter === newProject.category) {
+  if (activeFilter === 'all' || activeFilter === project.category) {
     renderProjects(activeFilter === 'all' ? projects : projects.filter(p => p.category === activeFilter));
   }
   
-  return newProject;
+  return project;
 }
