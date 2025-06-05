@@ -48,15 +48,20 @@ export function initGallery() {
       // Clear buffer
       buffer = '';
       
-      // Show edit buttons
-      const editButtons = document.querySelectorAll('.edit-project');
-      editButtons.forEach(btn => {
-        btn.style.display = 'block';
+      // Show edit and delete buttons
+      const projectActions = document.querySelectorAll('.project-actions');
+      projectActions.forEach(actions => {
+        const editButton = actions.querySelector('.edit-project');
+        const deleteButton = actions.querySelector('.delete-project');
+        
+        editButton.style.display = 'block';
+        deleteButton.style.display = 'block';
         
         // Hide after 10 seconds
         clearTimeout(timeout);
         timeout = setTimeout(() => {
-          btn.style.display = 'none';
+          editButton.style.display = 'none';
+          deleteButton.style.display = 'none';
         }, 10000);
       });
     }
@@ -98,7 +103,6 @@ function renderProjects(projectsToRender) {
 
     // Add delete button click handler
     const deleteButton = projectCard.querySelector('.delete-project');
-    deleteButton.style.display = editButton.style.display; // Match edit button visibility
     deleteButton.addEventListener('click', (e) => {
       e.stopPropagation();
       if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
