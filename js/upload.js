@@ -2,9 +2,6 @@ import { addProject } from './gallery.js';
 import { supabase } from './supabase.js';
 import { uploadImage } from './supabase.js';
 
-// Secret key for admin access
-const ADMIN_KEY = 'myPortfolio2025';
-
 export function initUploadForm() {
   const uploadBtn = document.getElementById('upload-btn');
   const uploadModal = document.getElementById('upload-modal');
@@ -12,35 +9,17 @@ export function initUploadForm() {
   const uploadForm = document.getElementById('upload-form');
   const imageInput = document.getElementById('project-image');
   const imagePreviewContainer = document.querySelector('.image-preview-container');
-  const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
-  
-  uploadBtn.style.display = 'none';
-  
-  // Check authentication status on init
-  checkAuthStatus();
-  
-  contactInputs.forEach(input => {
-    input.addEventListener('input', (e) => {
-      const value = e.target.value;
-      
-      if (value.includes(ADMIN_KEY)) {
-        uploadBtn.style.display = 'block';
-        
-        setTimeout(() => {
-          uploadBtn.style.display = 'none';
-        }, 5000);
-        
-        e.target.value = value.replace(ADMIN_KEY, '');
-      }
-    });
-  });
   
   uploadBtn.addEventListener('click', async () => {
     const { data: { user } } = await supabase.auth.getUser();
+    
     if (!user) {
-      showNotification('Please sign in to upload projects');
+      // Show auth modal if not signed in
+      const { toggleAuthForms } = await import('./auth.js');
+      toggleAuthForms(true);
       return;
     }
+    
     uploadModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
