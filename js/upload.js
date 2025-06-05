@@ -17,27 +17,17 @@ export function initUploadForm() {
   uploadBtn.style.display = 'none';
   
   // Track input in contact form fields
-  let keySequence = '';
-  const secretCode = ADMIN_KEY;
-  
   contactInputs.forEach(input => {
     input.addEventListener('input', (e) => {
-      keySequence = e.target.value;
+      const value = e.target.value;
       
-      // Check if any input contains the secret code
-      if (keySequence.includes(secretCode)) {
+      // Check if input contains the secret code
+      if (value.includes(ADMIN_KEY)) {
         uploadBtn.style.display = 'block';
-        
-        // Store admin status
         sessionStorage.setItem('isAdmin', 'true');
         
-        // Clear the input field
-        e.target.value = keySequence.replace(secretCode, '');
-        
-        // Hide button after 5 seconds
-        setTimeout(() => {
-          uploadBtn.style.display = 'none';
-        }, 5000);
+        // Clear the secret code from the input
+        e.target.value = value.replace(ADMIN_KEY, '');
       }
     });
   });
@@ -49,23 +39,17 @@ export function initUploadForm() {
   
   // Show upload modal when clicking the upload button
   uploadBtn.addEventListener('click', () => {
-    if (sessionStorage.getItem('isAdmin') !== 'true') {
-      return;
-    }
+    if (sessionStorage.getItem('isAdmin') !== 'true') return;
     uploadModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
   
   // Close modal when clicking the close button
-  closeModalBtn.addEventListener('click', () => {
-    closeUploadModal();
-  });
+  closeModalBtn.addEventListener('click', closeUploadModal);
   
   // Close modal when clicking outside content
   uploadModal.addEventListener('click', (e) => {
-    if (e.target === uploadModal) {
-      closeUploadModal();
-    }
+    if (e.target === uploadModal) closeUploadModal();
   });
   
   // Close modal with escape key
@@ -80,50 +64,40 @@ export function initUploadForm() {
   
   // Form submission
   uploadForm.addEventListener('submit', handleFormSubmit);
-
-  // Initialize local storage
-  if (!localStorage.getItem('portfolioProjects')) {
-    localStorage.setItem('portfolioProjects', JSON.stringify([]));
-  }
 }
 
-// Function to close the upload modal
 function closeUploadModal() {
   const uploadModal = document.getElementById('upload-modal');
   uploadModal.classList.remove('active');
   document.body.style.overflow = '';
   
-  // Reset form
+  // Reset form and clear previews
   document.getElementById('upload-form').reset();
   document.querySelector('.image-preview-container').innerHTML = '';
 }
 
-// Function to handle image preview
 function handleImagePreview(e) {
   const files = e.target.files;
   const previewContainer = document.querySelector('.image-preview-container');
   
-  // Clear previous previews
-  previewContainer.innerHTML = '';
-  
-  // Create previews for each file
   Array.from(files).forEach((file) => {
     if (!file.type.startsWith('image/')) return;
     
     const reader = new FileReader();
-    
     reader.onload = (event) => {
       const preview = document.createElement('div');
       preview.classList.add('image-preview');
       
       preview.innerHTML = `
         <img src="${event.target.result}" alt="Preview">
-        <span class="remove-image">&times;</span>
+        <button type="button" class="remove-image" aria-label="Remove image">&times;</button>
       `;
       
-      preview.querySelector('.remove-image').addEventListener('click', () => {
+      // Add remove functionality
+      const removeBtn = preview.querySelector('.remove-image');
+      removeBtn.addEventListener('click', () => {
         preview.remove();
-        updateFileInput();
+        updateFileList();
       });
       
       previewContainer.appendChild(preview);
@@ -133,15 +107,15 @@ function handleImagePreview(e) {
   });
 }
 
-// Function to update file input after removing images
-function updateFileInput() {
+function updateFileList() {
   const fileInput = document.getElementById('project-image');
   const dataTransfer = new DataTransfer();
   
-  // Get remaining preview images
+  // Get all current preview images
   const previews = document.querySelectorAll('.image-preview img');
+  
+  // Convert preview images back to files
   previews.forEach((preview, index) => {
-    // Create a new file from the preview image
     fetch(preview.src)
       .then(res => res.blob())
       .then(blob => {
@@ -152,94 +126,66 @@ function updateFileInput() {
   });
 }
 
-// Function to handle form submission
 function handleFormSubmit(e) {
   e.preventDefault();
   
-  if (sessionStorage.getItem('isAdmin') !== 'true') {
-    return;
-  }
+  if (sessionStorage.getItem('isAdmin') !== 'true') return;
   
-  // Get form data
   const formData = new FormData(e.target);
-  const title = formData.get('title');
-  const category = formData.get('category');
-  const description = formData.get('description');
-  const caseStudy = formData.get('caseStudy');
-  const fileInput = document.getElementById('project-image');
+  const projectData = {
+    title: formData.get('title'),
+    category: formData.get('category'),
+    description: formData.get('description'),
+    caseStudy: formData.get('caseStudy'),
+    images: Array.from(document.querySelectorAll('.image-preview img')).map(img => img.src),
+    date: new Date().toISOString()
+  };
   
   // Validate form data
-  if (!title || !category || !description || !caseStudy || fileInput.files.length === 0) {
+  if (!projectData.title || !projectData.category || !projectData.description || 
+      !projectData.caseStudy || projectData.images.length === 0) {
     alert('Please fill in all fields and upload at least one image.');
     return;
   }
   
-  // Get image data URLs
-  const imageUrls = Array.from(document.querySelectorAll('.image-preview img')).map(img => img.src);
+  // Save project
+  const savedProject = addProject(projectData);
   
-  // Create project object
-  const newProject = {
-    title,
-    category,
-    description,
-    caseStudy,
-    images: imageUrls,
-    date: new Date().toISOString()
-  };
-  
-  // Save to local storage
-  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
-  projects.unshift(newProject);
-  localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-  
-  // Add project to gallery
-  addProject(newProject);
-  
-  // Close modal and reset form
-  closeUploadModal();
-  
-  // Show success message
-  showNotification('Project added successfully!');
+  if (savedProject) {
+    closeUploadModal();
+    showNotification('Project added successfully!');
+  }
 }
 
-// Function to show notification
 function showNotification(message) {
-  // Create notification element
   const notification = document.createElement('div');
   notification.classList.add('notification');
   notification.textContent = message;
   
-  // Add to body
   document.body.appendChild(notification);
   
   // Show notification
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     notification.classList.add('show');
-  }, 100);
+  });
   
-  // Hide and remove notification
+  // Remove notification
   setTimeout(() => {
     notification.classList.remove('show');
-    
-    // Remove from DOM after fade out
-    setTimeout(() => {
-      notification.remove();
-    }, 300);
+    setTimeout(() => notification.remove(), 300);
   }, 3000);
 }
 
-// Function to edit project
+// Edit existing project
 export function editProject(projectId) {
-  if (sessionStorage.getItem('isAdmin') !== 'true') {
-    return;
-  }
+  if (sessionStorage.getItem('isAdmin') !== 'true') return;
   
   const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
   const project = projects.find(p => p.id === projectId);
   
   if (!project) return;
   
-  // Populate form with project data
+  // Populate form
   document.getElementById('project-title').value = project.title;
   document.getElementById('project-category').value = project.category;
   document.getElementById('project-description').value = project.description;
@@ -252,14 +198,16 @@ export function editProject(projectId) {
   project.images.forEach(imageUrl => {
     const preview = document.createElement('div');
     preview.classList.add('image-preview');
+    
     preview.innerHTML = `
       <img src="${imageUrl}" alt="Preview">
-      <span class="remove-image">&times;</span>
+      <button type="button" class="remove-image" aria-label="Remove image">&times;</button>
     `;
     
-    preview.querySelector('.remove-image').addEventListener('click', () => {
+    const removeBtn = preview.querySelector('.remove-image');
+    removeBtn.addEventListener('click', () => {
       preview.remove();
-      updateFileInput();
+      updateFileList();
     });
     
     previewContainer.appendChild(preview);
