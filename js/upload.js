@@ -39,6 +39,11 @@ export function initUploadForm() {
   
   // Form submission
   uploadForm.addEventListener('submit', handleFormSubmit);
+
+  // Initialize local storage
+  if (!localStorage.getItem('portfolioProjects')) {
+    localStorage.setItem('portfolioProjects', JSON.stringify([]));
+  }
 }
 
 // Function to close the upload modal
@@ -78,13 +83,32 @@ function handleImagePreview(e) {
       // Remove image functionality
       preview.querySelector('.remove-image').addEventListener('click', () => {
         preview.remove();
-        // Note: In a real application, you would also need to update the file input
+        updateFileInput();
       });
       
       previewContainer.appendChild(preview);
     };
     
     reader.readAsDataURL(file);
+  });
+}
+
+// Function to update file input after removing images
+function updateFileInput() {
+  const fileInput = document.getElementById('project-image');
+  const dataTransfer = new DataTransfer();
+  
+  // Get remaining preview images
+  const previews = document.querySelectorAll('.image-preview img');
+  previews.forEach((preview, index) => {
+    // Create a new file from the preview image
+    fetch(preview.src)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], `image-${index}.jpg`, { type: 'image/jpeg' });
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+      });
   });
 }
 
@@ -106,16 +130,8 @@ function handleFormSubmit(e) {
     return;
   }
   
-  // In a real application, you would upload the images to a server
-  // Here we're creating URLs for demonstration purposes
-  const imageFiles = Array.from(fileInput.files);
-  const imageUrls = [];
-  
-  // For demo purposes, we'll use the preview images as URLs
-  const previewImages = document.querySelectorAll('.image-preview img');
-  previewImages.forEach(img => {
-    imageUrls.push(img.src);
-  });
+  // Get image data URLs
+  const imageUrls = Array.from(document.querySelectorAll('.image-preview img')).map(img => img.src);
   
   // Create project object
   const newProject = {
@@ -123,8 +139,14 @@ function handleFormSubmit(e) {
     category,
     description,
     caseStudy,
-    images: imageUrls
+    images: imageUrls,
+    date: new Date().toISOString()
   };
+  
+  // Save to local storage
+  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+  projects.unshift(newProject);
+  localStorage.setItem('portfolioProjects', JSON.stringify(projects));
   
   // Add project to gallery
   addProject(newProject);
@@ -160,4 +182,43 @@ function showNotification(message) {
       notification.remove();
     }, 300);
   }, 3000);
+}
+
+// Function to edit project
+export function editProject(projectId) {
+  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+  const project = projects.find(p => p.id === projectId);
+  
+  if (!project) return;
+  
+  // Populate form with project data
+  document.getElementById('project-title').value = project.title;
+  document.getElementById('project-category').value = project.category;
+  document.getElementById('project-description').value = project.description;
+  document.getElementById('project-case-study').value = project.caseStudy;
+  
+  // Show image previews
+  const previewContainer = document.querySelector('.image-preview-container');
+  previewContainer.innerHTML = '';
+  
+  project.images.forEach(imageUrl => {
+    const preview = document.createElement('div');
+    preview.classList.add('image-preview');
+    preview.innerHTML = `
+      <img src="${imageUrl}" alt="Preview">
+      <span class="remove-image">&times;</span>
+    `;
+    
+    preview.querySelector('.remove-image').addEventListener('click', () => {
+      preview.remove();
+      updateFileInput();
+    });
+    
+    previewContainer.appendChild(preview);
+  });
+  
+  // Show modal
+  const uploadModal = document.getElementById('upload-modal');
+  uploadModal.classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
