@@ -94,7 +94,7 @@ function renderProjects(projectsToRender) {
     // Add edit button click handler
     editButton.addEventListener('click', (e) => {
       e.stopPropagation();
-      editProject(project.id);
+      showSecurityDialog(project.id);
     });
     
     // Add click event for project details
@@ -116,6 +116,56 @@ function renderProjects(projectsToRender) {
   setTimeout(() => {
     projectsGrid.classList.add('animated');
   }, 100);
+}
+
+// Show security dialog
+function showSecurityDialog(projectId) {
+  // Create security dialog
+  const dialog = document.createElement('div');
+  dialog.classList.add('security-dialog');
+  
+  dialog.innerHTML = `
+    <div class="security-dialog-content">
+      <h3>Security Check</h3>
+      <p>Please enter the security code to edit:</p>
+      <input type="password" id="security-code" class="security-input">
+      <div class="security-buttons">
+        <button class="btn cancel-btn">Cancel</button>
+        <button class="btn confirm-btn">Confirm</button>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(dialog);
+  
+  // Show dialog with animation
+  requestAnimationFrame(() => {
+    dialog.classList.add('active');
+    dialog.querySelector('#security-code').focus();
+  });
+  
+  // Handle input submission
+  const handleSubmit = () => {
+    const code = dialog.querySelector('#security-code').value;
+    if (code === '589426') {
+      dialog.remove();
+      editProject(projectId);
+    } else {
+      alert('Invalid security code');
+    }
+  };
+  
+  // Add event listeners
+  dialog.querySelector('.confirm-btn').addEventListener('click', handleSubmit);
+  dialog.querySelector('.cancel-btn').addEventListener('click', () => dialog.remove());
+  dialog.querySelector('#security-code').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSubmit();
+  });
+  
+  // Close when clicking outside
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.remove();
+  });
 }
 
 // Show project details in modal
