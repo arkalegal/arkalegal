@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | Creative Graphic Designer</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Work+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="#" class="logo-link">Anna Walker</a>
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" class="active" data-section="gallery">Work</a></li>
+          <li><a href="#" data-section="about">About</a></li>
+          <li><a href="#" data-section="contact">Contact</a></li>
+        </ul>
+        <div class="theme-toggle">
+          <span class="toggle-icon light active">☀️</span>
+          <span class="toggle-icon dark">🌙</span>
+        </div>
+        <div class="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="hero" class="hero">
+      <div class="container">
+        <h1 class="reveal-text">Creating visual stories that resonate</h1>
+        <p class="subtitle reveal-text delay-1">Graphic design portfolio showcasing creative concepts and innovative solutions</p>
+        <a href="#gallery" class="scroll-down">
+          <span class="scroll-text">Scroll to explore</span>
+          <span class="scroll-icon"></span>
+        </a>
+      </div>
+    </section>
+
+    <section id="gallery" class="gallery section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Featured Work</h2>
+          <div class="filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="branding">Branding</button>
+            <button class="filter-btn" data-filter="print">Print</button>
+            <button class="filter-btn" data-filter="digital">Digital</button>
+            <button class="filter-btn" data-filter="illustration">Illustration</button>
+          </div>
+        </div>
+        
+        <div class="projects-grid">
+          <!-- Projects will be dynamically loaded here -->
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about section">
+      <div class="container">
+        <div class="about-content">
+          <div class="about-text">
+            <h2>About Me</h2>
+            <p>I'm a graphic designer with a passion for creating visual solutions that communicate effectively and leave a lasting impression. With over 8 years of experience in both digital and print design, I focus on crafting unique visual identities and creative concepts that help brands stand out.</p>
+            <p>My approach combines strategic thinking with artistic expression, resulting in designs that are not only visually appealing but also purposeful and meaningful.</p>
+            
+            <div class="skills">
+              <h3>Specialties</h3>
+              <ul class="skills-list">
+                <li>Brand Identity</li>
+                <li>Editorial Design</li>
+                <li>Packaging</li>
+                <li>Digital Illustration</li>
+                <li>UI/UX Design</li>
+                <li>Motion Graphics</li>
+              </ul>
+            </div>
+          </div>
+          <div class="about-image">
+            <img src="https://images.pexels.com/photos/5212320/pexels-photo-5212320.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Designer at work">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact section">
+      <div class="container">
+        <h2>Let's Work Together</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <p>I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
+            <div class="contact-details">
+              <div class="contact-item">
+                <span class="contact-label">Email</span>
+                <a href="mailto:hello@annawalker.com" class="contact-value">hello@annawalker.com</a>
+              </div>
+              <div class="contact-item">
+                <span class="contact-label">Based in</span>
+                <span class="contact-value">San Francisco, CA</span>
+              </div>
+              <div class="social-links">
+                <a href="#" class="social-link">Instagram</a>
+                <a href="#" class="social-link">Behance</a>
+                <a href="#" class="social-link">LinkedIn</a>
+                <a href="#" class="social-link">Dribbble</a>
+              </div>
+            </div>
+          </div>
+          <form id="contact-form" class="contact-form">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <input type="text" id="subject" name="subject" required>
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" required></textarea>
+            </div>
+            <button type="submit" class="btn submit-btn">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <div id="project-modal" class="project-modal">
+      <div class="modal-content">
+        <button class="close-modal">&times;</button>
+        <div class="project-details">
+          <!-- Project details will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <div id="upload-modal" class="upload-modal">
+      <div class="modal-content">
+        <button class="close-modal">&times;</button>
+        <h2>Add New Project</h2>
+        <form id="upload-form" class="upload-form">
+          <div class="form-group">
+            <label for="project-title">Project Title</label>
+            <input type="text" id="project-title" name="title" required>
+          </div>
+          <div class="form-group">
+            <label for="project-category">Category</label>
+            <select id="project-category" name="category" required>
+              <option value="">Select a category</option>
+              <option value="branding">Branding</option>
+              <option value="print">Print</option>
+              <option value="digital">Digital</option>
+              <option value="illustration">Illustration</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="project-description">Short Description</label>
+            <textarea id="project-description" name="description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="project-case-study">Case Study</label>
+            <textarea id="project-case-study" name="caseStudy" required placeholder="Describe your creative process, inspiration, and challenges..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="project-image">Project Images</label>
+            <input type="file" id="project-image" name="images" accept="image/*" multiple required>
+            <div class="image-preview-container"></div>
+          </div>
+          <button type="submit" class="btn submit-btn">Add Project</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span class="copyright">&copy; 2025 Anna Walker. All rights reserved.</span>
+        </div>
+        <div class="footer-right">
+          <button id="upload-btn" class="upload-btn">Upload New Project</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js" type="module"></script>
+</body>
+</html>

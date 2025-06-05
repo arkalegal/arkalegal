@@ -1,0 +1,175 @@
+/* Responsive CSS */
+
+/* Tablet (768px - 1023px) */
+@media screen and (max-width: 1023px) {
+  html {
+    font-size: 56.25%; /* 1rem = 9px */
+  }
+
+  .section {
+    padding: 80px 0;
+  }
+
+  .hero h1 {
+    font-size: 5rem;
+  }
+
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .about-image {
+    order: -1;
+  }
+
+  .contact-content {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  
+  .contact-info {
+    order: 1;
+  }
+
+  .project-details-info {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  
+  .cursor, .cursor-follower {
+    display: none;
+  }
+}
+
+/* Mobile (480px - 767px) */
+@media screen and (max-width: 767px) {
+  html {
+    font-size: 50%; /* 1rem = 8px */
+  }
+
+  header .container {
+    position: relative;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 70%;
+    height: 100vh;
+    background-color: var(--background-color);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transition: right 0.3s ease;
+    z-index: 1001;
+    box-shadow: -5px 0 15px var(--shadow-color);
+  }
+
+  .nav-links.active {
+    right: 0;
+  }
+
+  .theme-toggle {
+    margin-left: 0;
+    margin-top: 32px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    z-index: 1002;
+  }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .section {
+    padding: 64px 0;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .hero {
+    padding-top: 0;
+  }
+
+  .hero h1 {
+    font-size: 3.6rem;
+  }
+
+  .hero .subtitle {
+    font-size: 1.8rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .project-card::before {
+    padding-top: 66.67%; /* 3:2 aspect ratio */
+  }
+
+  .modal-content {
+    padding: 24px;
+  }
+
+  .project-details-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+  }
+}
+
+/* Small Mobile (320px - 479px) */
+@media screen and (max-width: 479px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero h1 {
+    font-size: 3.2rem;
+  }
+
+  .filters {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .contact-form {
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    padding: 8px;
+  }
+
+  .submit-btn {
+    width: 100%;
+  }
+}
