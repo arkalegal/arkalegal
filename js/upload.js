@@ -16,6 +16,9 @@ export function initUploadForm() {
   
   uploadBtn.style.display = 'none';
   
+  // Check authentication status on init
+  checkAuthStatus();
+  
   contactInputs.forEach(input => {
     input.addEventListener('input', (e) => {
       const value = e.target.value;
@@ -32,7 +35,12 @@ export function initUploadForm() {
     });
   });
   
-  uploadBtn.addEventListener('click', () => {
+  uploadBtn.addEventListener('click', async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      showNotification('Please sign in to upload projects');
+      return;
+    }
     uploadModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
@@ -52,6 +60,17 @@ export function initUploadForm() {
   imageInput.addEventListener('change', handleImagePreview);
   
   uploadForm.addEventListener('submit', handleFormSubmit);
+}
+
+async function checkAuthStatus() {
+  const { data: { user } } = await supabase.auth.getUser();
+  const uploadBtn = document.getElementById('upload-btn');
+  
+  if (user) {
+    uploadBtn.style.display = 'block';
+  } else {
+    uploadBtn.style.display = 'none';
+  }
 }
 
 function closeUploadModal() {
@@ -115,6 +134,13 @@ async function handleFormSubmit(e) {
   e.preventDefault();
   
   try {
+    // Check if user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      throw new Error('Please sign in to upload projects');
+    }
+
     const formData = new FormData(e.target);
     const files = Array.from(e.target.querySelector('#project-image').files);
     
@@ -128,13 +154,6 @@ async function handleFormSubmit(e) {
     submitBtn.textContent = 'Uploading...';
     submitBtn.disabled = true;
 
-    // Check if user is authenticated
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      throw new Error('Please sign in to upload projects');
-    }
-
     // Upload images to Supabase Storage
     const imageUrls = await Promise.all(
       files.map(file => uploadImage(file))
@@ -146,7 +165,7 @@ async function handleFormSubmit(e) {
       description: formData.get('description'),
       caseStudy: formData.get('caseStudy'),
       images: imageUrls,
-      user_id: user.id // Use the authenticated user's ID
+      user_id: user.id
     };
     
     // Validate all required fields
