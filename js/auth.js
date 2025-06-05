@@ -2,7 +2,7 @@ import { supabase } from './supabase.js';
 
 // Show/hide auth forms
 export function toggleAuthForms(show) {
-  const authModal = document.getElementById('auth-modal');
+  const authModal = document.querySelector('.auth-modal');
   if (show) {
     authModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -73,61 +73,53 @@ function showNotification(message) {
   }, 3000);
 }
 
+// Initialize auth modal
 export function initAuth() {
-  // Create the auth modal if it doesn't exist
-  if (!document.getElementById('auth-modal')) {
-    const authModal = document.createElement('div');
-    authModal.id = 'auth-modal';
-    authModal.className = 'auth-modal';
-    
-    authModal.innerHTML = `
-      <div class="modal-content auth-modal-content">
-        <button class="close-modal">&times;</button>
-        <h2 class="auth-title">Sign In / Sign Up</h2>
-        <form id="auth-form" class="auth-form">
-          <div class="form-group">
-            <label for="auth-email">Email</label>
-            <input type="email" id="auth-email" required>
-          </div>
-          <div class="form-group">
-            <label for="auth-password">Password</label>
-            <input type="password" id="auth-password" required>
-          </div>
-          <div class="auth-buttons">
-            <button type="button" id="sign-in-btn" class="btn">Sign In</button>
-            <button type="button" id="sign-up-btn" class="btn">Sign Up</button>
-          </div>
-        </form>
-      </div>
-    `;
-    
-    document.body.appendChild(authModal);
-    
-    // Add event listeners
-    const closeBtn = authModal.querySelector('.close-modal');
-    const signInBtn = document.getElementById('sign-in-btn');
-    const signUpBtn = document.getElementById('sign-up-btn');
-    
-    closeBtn.addEventListener('click', () => toggleAuthForms(false));
-    signInBtn.addEventListener('click', handleSignIn);
-    signUpBtn.addEventListener('click', handleSignUp);
-    
-    // Close on outside click
-    authModal.addEventListener('click', (e) => {
-      if (e.target === authModal) {
-        toggleAuthForms(false);
-      }
-    });
-    
-    // Close on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && authModal.classList.contains('active')) {
-        toggleAuthForms(false);
-      }
-    });
-  }
+  const authModal = document.createElement('div');
+  authModal.className = 'auth-modal';
+  authModal.innerHTML = `
+    <div class="modal-content">
+      <button class="close-modal">&times;</button>
+      <h2>Sign In / Sign Up</h2>
+      <form class="auth-form">
+        <div class="form-group">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" required>
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" required>
+        </div>
+        <div class="auth-buttons">
+          <button type="button" class="sign-in-btn">Sign In</button>
+          <button type="button" class="sign-up-btn">Sign Up</button>
+        </div>
+      </form>
+    </div>
+  `;
   
-  return {
-    showNotification
-  };
+  document.body.appendChild(authModal);
+  
+  // Add event listeners
+  const closeBtn = authModal.querySelector('.close-modal');
+  const signInBtn = authModal.querySelector('.sign-in-btn');
+  const signUpBtn = authModal.querySelector('.sign-up-btn');
+  
+  closeBtn.addEventListener('click', () => toggleAuthForms(false));
+  signInBtn.addEventListener('click', handleSignIn);
+  signUpBtn.addEventListener('click', handleSignUp);
+  
+  // Close on outside click
+  authModal.addEventListener('click', (e) => {
+    if (e.target === authModal) {
+      toggleAuthForms(false);
+    }
+  });
+  
+  // Close on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && authModal.classList.contains('active')) {
+      toggleAuthForms(false);
+    }
+  });
 }
