@@ -77,7 +77,9 @@ export function initAuth() {
   const authModal = document.createElement('div');
   authModal.id = 'auth-modal';
   authModal.className = 'auth-modal';
-  authModal.innerHTML = `
+  
+  // Create the modal content
+  const modalContent = `
     <div class="modal-content">
       <button class="close-modal">&times;</button>
       <h2>Sign In / Sign Up</h2>
@@ -98,6 +100,10 @@ export function initAuth() {
     </div>
   `;
   
+  // Set the modal content
+  authModal.innerHTML = modalContent;
+  
+  // Append the modal to the body
   document.body.appendChild(authModal);
   
   // Add event listeners
