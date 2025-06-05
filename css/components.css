@@ -53,6 +53,7 @@
   background-color: var(--modal-bg);
   padding: 32px;
   border-radius: 8px;
+  text-align: center;
   position: relative;
   transform: translateY(-20px);
   transition: transform 0.3s ease;
@@ -60,6 +61,18 @@
 
 .sign-in-modal.active .modal-content {
   transform: translateY(0);
+}
+
+.sign-in-modal h2 {
+  font-size: 2.4rem;
+  margin-bottom: 16px;
+  color: var(--text-color);
+}
+
+.sign-in-text {
+  color: var(--text-color-light);
+  margin-bottom: 24px;
+  font-size: 1.6rem;
 }
 
 .sign-in-btn {
@@ -189,6 +202,7 @@
   color: white;
 }
 
+/* Project Cards */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
