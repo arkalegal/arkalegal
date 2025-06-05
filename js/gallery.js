@@ -1,20 +1,28 @@
-// Gallery JavaScript
+import { supabase } from './supabase.js';
 import { editProject } from './upload.js';
 
 // Initialize the gallery
-export function initGallery() {
+export async function initGallery() {
   const projectsGrid = document.querySelector('.projects-grid');
   const filterButtons = document.querySelectorAll('.filter-btn');
   
-  // Load projects from local storage
-  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
+  // Load projects from Supabase
+  const { data: projects, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error loading projects:', error);
+    return;
+  }
   
   // Render all projects initially
   renderProjects(projects);
   
   // Add filter functionality
   filterButtons.forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
       // Update active class
       filterButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
@@ -31,24 +39,20 @@ export function initGallery() {
     });
   });
 
-  // Add secret code detection
+  // Add secret code detection for admin features
   let buffer = '';
   let timeout;
 
   document.addEventListener('keydown', (e) => {
     buffer += e.key;
     
-    // Remove old characters if buffer gets too long
     if (buffer.length > 10) {
       buffer = buffer.slice(-10);
     }
     
-    // Check if buffer contains secret code
     if (buffer.includes('AB7215')) {
-      // Clear buffer
       buffer = '';
       
-      // Show edit and delete buttons
       const projectActions = document.querySelectorAll('.project-actions');
       projectActions.forEach(actions => {
         const editButton = actions.querySelector('.edit-project');
@@ -57,7 +61,6 @@ export function initGallery() {
         editButton.style.display = 'block';
         deleteButton.style.display = 'block';
         
-        // Hide after 10 seconds
         clearTimeout(timeout);
         timeout = setTimeout(() => {
           editButton.style.display = 'none';
@@ -103,10 +106,10 @@ function renderProjects(projectsToRender) {
 
     // Add delete button click handler
     const deleteButton = projectCard.querySelector('.delete-project');
-    deleteButton.addEventListener('click', (e) => {
+    deleteButton.addEventListener('click', async (e) => {
       e.stopPropagation();
       if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
-        deleteProject(project.id);
+        await deleteProject(project.id);
       }
     });
     
@@ -136,7 +139,6 @@ function showProjectDetails(project) {
   const projectModal = document.getElementById('project-modal');
   const projectDetails = document.querySelector('.project-details');
   
-  // Build project details HTML
   projectDetails.innerHTML = `
     <div class="project-details-header">
       <h2 class="project-details-title">${project.title}</h2>
@@ -157,59 +159,79 @@ function showProjectDetails(project) {
       
       <div class="project-details-case-study">
         <h3>Case Study</h3>
-        <p>${project.caseStudy}</p>
+        <p>${project.case_study}</p>
       </div>
     </div>
   `;
   
-  // Show modal
   projectModal.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
 
 // Function to delete a project
-function deleteProject(projectId) {
-  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
-  const updatedProjects = projects.filter(p => p.id !== projectId);
-  localStorage.setItem('portfolioProjects', JSON.stringify(updatedProjects));
-  
-  // Re-render the gallery
-  const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
-  renderProjects(activeFilter === 'all' ? updatedProjects : updatedProjects.filter(p => p.category === activeFilter));
-  
-  // Show notification
-  showNotification('Project deleted successfully!');
+async function deleteProject(projectId) {
+  try {
+    // Get project images first
+    const { data: project } = await supabase
+      .from('projects')
+      .select('images')
+      .eq('id', projectId)
+      .single();
+
+    // Delete images from storage
+    for (const imageUrl of project.images) {
+      await deleteImage(imageUrl);
+    }
+
+    // Delete project from database
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', projectId);
+
+    if (error) throw error;
+
+    // Re-fetch and render projects
+    const { data: projects } = await supabase
+      .from('projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+    renderProjects(activeFilter === 'all' ? projects : projects.filter(p => p.category === activeFilter));
+
+    showNotification('Project deleted successfully!');
+  } catch (error) {
+    console.error('Error deleting project:', error);
+    showNotification('Error deleting project. Please try again.');
+  }
 }
 
 // Function to add a new project
-export function addProject(project) {
-  // Get existing projects
-  const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
-  
-  if (project.id) {
-    // If project has an ID, it's an edit - replace the old project
-    const index = projects.findIndex(p => p.id === project.id);
-    if (index !== -1) {
-      projects[index] = project;
-    }
-  } else {
-    // Generate a new ID for new projects
-    const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
-    project.id = newId;
-    projects.unshift(project);
+export async function addProject(projectData) {
+  try {
+    const { data, error } = await supabase
+      .from('projects')
+      .upsert([
+        {
+          id: projectData.id,
+          title: projectData.title,
+          category: projectData.category,
+          description: projectData.description,
+          case_study: projectData.caseStudy,
+          images: projectData.images,
+          user_id: (await supabase.auth.getUser()).data.user.id
+        }
+      ])
+      .select();
+
+    if (error) throw error;
+
+    return data[0];
+  } catch (error) {
+    console.error('Error saving project:', error);
+    throw error;
   }
-  
-  // Save updated projects array
-  localStorage.setItem('portfolioProjects', JSON.stringify(projects));
-  
-  // Re-render the gallery
-  const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
-  
-  if (activeFilter === 'all' || activeFilter === project.category) {
-    renderProjects(activeFilter === 'all' ? projects : projects.filter(p => p.category === activeFilter));
-  }
-  
-  return project;
 }
 
 // Function to show notification
@@ -220,12 +242,10 @@ function showNotification(message) {
   
   document.body.appendChild(notification);
   
-  // Show notification
   requestAnimationFrame(() => {
     notification.classList.add('show');
   });
   
-  // Remove notification
   setTimeout(() => {
     notification.classList.remove('show');
     setTimeout(() => notification.remove(), 300);
