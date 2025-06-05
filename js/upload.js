@@ -11,35 +11,35 @@ export function initUploadForm() {
   const uploadForm = document.getElementById('upload-form');
   const imageInput = document.getElementById('project-image');
   const imagePreviewContainer = document.querySelector('.image-preview-container');
+  const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
   
   // Hide upload button by default
   uploadBtn.style.display = 'none';
   
-  // Add keyboard shortcut listener for admin access
+  // Track input in contact form fields
   let keySequence = '';
   const secretCode = ADMIN_KEY;
   
-  document.addEventListener('keydown', (e) => {
-    keySequence += e.key;
-    
-    // Only keep the last N characters where N is the length of the secret code
-    if (keySequence.length > secretCode.length) {
-      keySequence = keySequence.slice(-secretCode.length);
-    }
-    
-    // Check if the sequence matches the secret code
-    if (keySequence === secretCode) {
-      uploadBtn.style.display = 'block';
-      keySequence = ''; // Reset sequence
+  contactInputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      keySequence = e.target.value;
       
-      // Store admin status
-      sessionStorage.setItem('isAdmin', 'true');
-      
-      // Hide button after 5 seconds
-      setTimeout(() => {
-        uploadBtn.style.display = 'none';
-      }, 5000);
-    }
+      // Check if any input contains the secret code
+      if (keySequence.includes(secretCode)) {
+        uploadBtn.style.display = 'block';
+        
+        // Store admin status
+        sessionStorage.setItem('isAdmin', 'true');
+        
+        // Clear the input field
+        e.target.value = keySequence.replace(secretCode, '');
+        
+        // Hide button after 5 seconds
+        setTimeout(() => {
+          uploadBtn.style.display = 'none';
+        }, 5000);
+      }
+    });
   });
   
   // Check admin status on page load
