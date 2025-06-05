@@ -55,12 +55,44 @@
   background-color: var(--modal-bg);
   border-radius: 8px;
   padding: 32px;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+}
+
+.auth-modal.active .modal-content {
+  transform: translateY(0);
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.auth-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-form label {
+  color: var(--text-color);
+  font-size: 1.4rem;
+}
+
+.auth-form input {
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-color);
+  font-size: 1.6rem;
+}
+
+.auth-form input:focus {
+  border-color: var(--accent-color);
+  outline: none;
 }
 
 .auth-buttons {
@@ -76,6 +108,7 @@
   font-weight: 600;
   text-align: center;
   transition: all 0.3s ease;
+  font-size: 1.6rem;
 }
 
 .auth-buttons .btn:first-child {
@@ -83,8 +116,34 @@
   color: white;
 }
 
+.auth-buttons .btn:first-child:hover {
+  background-color: #e64a1c;
+}
+
 .auth-buttons .btn:last-child {
   border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+}
+
+.auth-buttons .btn:last-child:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.close-modal {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.close-modal:hover {
   color: var(--accent-color);
 }
 
