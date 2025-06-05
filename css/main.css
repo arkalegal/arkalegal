@@ -10,6 +10,8 @@
   --modal-bg: #ffffff;
   --shadow-color: rgba(0, 0, 0, 0.05);
   --hover-color: rgba(255, 60, 0, 0.05);
+  --toggle-bg: #e4e6eb;
+  --toggle-circle: #ffffff;
 }
 
 [data-theme="dark"] {
@@ -22,6 +24,8 @@
   --modal-bg: #1e1e1e;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --hover-color: rgba(255, 87, 34, 0.1);
+  --toggle-bg: #484a4d;
+  --toggle-circle: #ffffff;
 }
 
 .container {
@@ -136,16 +140,48 @@ header .container {
 }
 
 .theme-toggle {
+  position: relative;
+  width: 56px;
+  height: 28px;
+  margin-left: 32px;
+  padding: 4px;
+  border-radius: 14px;
+  background-color: var(--toggle-bg);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-circle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background-color: var(--toggle-circle);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  margin-left: 32px;
-  cursor: pointer;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+[data-theme="dark"] .toggle-circle {
+  transform: translateX(28px);
 }
 
 .toggle-icon {
-  font-size: 1.8rem;
+  position: absolute;
+  font-size: 14px;
   opacity: 0.3;
   transition: opacity 0.3s ease;
+}
+
+.toggle-icon.light {
+  left: 8px;
+}
+
+.toggle-icon.dark {
+  right: 8px;
 }
 
 .toggle-icon.active {
