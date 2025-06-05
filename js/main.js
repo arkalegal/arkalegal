@@ -6,9 +6,6 @@ import { initAnimations } from './animations.js';
 
 // DOM elements
 const header = document.querySelector('header');
-const themeToggle = document.querySelector('.theme-toggle');
-const lightIcon = document.querySelector('.toggle-icon.light');
-const darkIcon = document.querySelector('.toggle-icon.dark');
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const navItems = document.querySelectorAll('.nav-links a');
@@ -17,14 +14,6 @@ const cursorFollower = document.querySelector('.cursor-follower');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-  // Set initial theme
-  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (prefersDarkMode) {
-    document.body.setAttribute('data-theme', 'dark');
-    lightIcon.classList.remove('active');
-    darkIcon.classList.add('active');
-  }
-
   // Initialize modules
   initGallery();
   initProjectModal();
@@ -44,9 +33,6 @@ function initEventListeners() {
       header.classList.remove('scrolled');
     }
   });
-
-  // Theme toggle
-  themeToggle.addEventListener('click', toggleTheme);
 
   // Mobile menu toggle
   menuToggle.addEventListener('click', toggleMobileMenu);
@@ -77,21 +63,6 @@ function initEventListeners() {
       }
     });
   });
-}
-
-// Toggle theme function
-function toggleTheme() {
-  const currentTheme = document.body.getAttribute('data-theme');
-  
-  if (currentTheme === 'dark') {
-    document.body.removeAttribute('data-theme');
-    lightIcon.classList.add('active');
-    darkIcon.classList.remove('active');
-  } else {
-    document.body.setAttribute('data-theme', 'dark');
-    lightIcon.classList.remove('active');
-    darkIcon.classList.add('active');
-  }
 }
 
 // Toggle mobile menu function

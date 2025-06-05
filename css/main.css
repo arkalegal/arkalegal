@@ -1,20 +1,6 @@
 /* Main CSS */
 :root {
-  /* Light theme */
-  --background-color: #f9f9f9;
-  --text-color: #222222;
-  --text-color-light: #666666;
-  --accent-color: #ff3c00;
-  --border-color: #dddddd;
-  --card-bg: #ffffff;
-  --modal-bg: #ffffff;
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --hover-color: rgba(255, 60, 0, 0.05);
-  --toggle-bg: #e4e6eb;
-  --toggle-circle: #ffffff;
-}
-
-[data-theme="dark"] {
+  /* Dark theme only */
   --background-color: #121212;
   --text-color: #f0f0f0;
   --text-color-light: #aaaaaa;
@@ -24,8 +10,6 @@
   --modal-bg: #1e1e1e;
   --shadow-color: rgba(0, 0, 0, 0.3);
   --hover-color: rgba(255, 87, 34, 0.1);
-  --toggle-bg: #484a4d;
-  --toggle-circle: #ffffff;
 }
 
 .container {
@@ -137,70 +121,6 @@ header .container {
 .nav-links a:hover::after,
 .nav-links a.active::after {
   width: 100%;
-}
-
-.theme-toggle {
-  position: fixed;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 56px;
-  height: 28px;
-  padding: 4px;
-  border-radius: 14px;
-  background-color: var(--toggle-bg);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  z-index: 1001;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.toggle-circle {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: 20px;
-  height: 20px;
-  background-color: var(--toggle-circle);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-[data-theme="dark"] .toggle-circle {
-  transform: translateX(28px);
-}
-
-.toggle-icon {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.3;
-  transition: opacity 0.3s ease;
-}
-
-.toggle-icon img {
-  width: 100%;
-  height: 100%;
-  color: var(--text-color);
-}
-
-.toggle-icon.light {
-  left: 8px;
-}
-
-.toggle-icon.dark {
-  right: 8px;
-}
-
-.toggle-icon.active {
-  opacity: 1;
 }
 
 .menu-toggle {
