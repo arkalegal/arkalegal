@@ -69,6 +69,11 @@ export async function initGallery() {
       });
     }
   });
+
+  // Listen for project saved event
+  document.addEventListener('projectSaved', () => {
+    initGallery();
+  });
 }
 
 // Render projects to the grid
@@ -207,34 +212,6 @@ async function deleteProject(projectId) {
   }
 }
 
-// Function to add a new project
-export async function addProject(projectData) {
-  try {
-    const { data, error } = await supabase
-      .from('projects')
-      .upsert([
-        {
-          id: projectData.id,
-          title: projectData.title,
-          category: projectData.category,
-          description: projectData.description,
-          case_study: projectData.caseStudy,
-          images: projectData.images,
-          user_id: (await supabase.auth.getUser()).data.user.id
-        }
-      ])
-      .select();
-
-    if (error) throw error;
-
-    return data[0];
-  } catch (error) {
-    console.error('Error saving project:', error);
-    throw error;
-  }
-}
-
-// Function to show notification
 function showNotification(message) {
   const notification = document.createElement('div');
   notification.classList.add('notification');

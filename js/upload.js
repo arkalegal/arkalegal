@@ -37,13 +37,71 @@ export function initUploadForm() {
   uploadForm.addEventListener('submit', handleFormSubmit);
 }
 
+export async function editProject(projectId) {
+  try {
+    const { data: project, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', projectId)
+      .single();
+
+    if (error) throw error;
+
+    const uploadModal = document.getElementById('upload-modal');
+    const uploadForm = document.getElementById('upload-form');
+    const imagePreviewContainer = document.querySelector('.image-preview-container');
+    const submitBtn = uploadForm.querySelector('button[type="submit"]');
+
+    // Set form values
+    uploadForm.querySelector('#project-id').value = project.id;
+    uploadForm.querySelector('#project-title').value = project.title;
+    uploadForm.querySelector('#project-category').value = project.category;
+    uploadForm.querySelector('#project-description').value = project.description;
+    uploadForm.querySelector('#project-case-study').value = project.case_study;
+
+    // Clear and populate image preview container
+    imagePreviewContainer.innerHTML = '';
+    project.images.forEach(imageUrl => {
+      const preview = document.createElement('div');
+      preview.classList.add('image-preview');
+      preview.innerHTML = `
+        <img src="${imageUrl}" alt="Preview">
+        <button type="button" class="remove-image" aria-label="Remove image">&times;</button>
+      `;
+
+      const removeBtn = preview.querySelector('.remove-image');
+      removeBtn.addEventListener('click', () => {
+        preview.remove();
+        updateFileList();
+      });
+
+      imagePreviewContainer.appendChild(preview);
+    });
+
+    // Update submit button text
+    submitBtn.textContent = 'Update Project';
+
+    // Show modal
+    uploadModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  } catch (error) {
+    console.error('Error loading project for editing:', error);
+    showNotification('Error loading project. Please try again.');
+  }
+}
+
 function closeUploadModal() {
   const uploadModal = document.getElementById('upload-modal');
+  const uploadForm = document.getElementById('upload-form');
+  const submitBtn = uploadForm.querySelector('button[type="submit"]');
+  
   uploadModal.classList.remove('active');
   document.body.style.overflow = '';
   
-  document.getElementById('upload-form').reset();
+  uploadForm.reset();
   document.querySelector('.image-preview-container').innerHTML = '';
+  uploadForm.querySelector('#project-id').value = '';
+  submitBtn.textContent = 'Add Project';
 }
 
 function handleImagePreview(e) {
@@ -105,41 +163,43 @@ async function handleFormSubmit(e) {
     }
 
     const formData = new FormData(e.target);
+    const projectId = formData.get('id');
     const files = Array.from(e.target.querySelector('#project-image').files);
-    
-    if (!files.length) {
-      throw new Error('Please upload at least one image');
-    }
+    const existingImages = Array.from(document.querySelectorAll('.image-preview img'))
+      .map(img => img.src)
+      .filter(src => src.startsWith('http')); // Only keep URLs, not data URLs
 
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Uploading...';
     submitBtn.disabled = true;
 
-    const imageUrls = await Promise.all(
+    // Upload new images
+    const newImageUrls = await Promise.all(
       files.map(file => uploadImage(file))
     );
     
     const projectData = {
+      id: projectId || undefined, // Include ID only if editing
       title: formData.get('title'),
       category: formData.get('category'),
       description: formData.get('description'),
-      case_study: formData.get('case_study'),
-      images: imageUrls,
+      case_study: formData.get('caseStudy'),
+      images: [...existingImages, ...newImageUrls],
       user_id: user.id
     };
     
     const { data, error } = await supabase
       .from('projects')
-      .insert([projectData])
+      .upsert([projectData])
       .select()
       .single();
 
     if (error) throw error;
     
     closeUploadModal();
-    showNotification('Project added successfully!');
-    window.location.reload();
+    showNotification(projectId ? 'Project updated successfully!' : 'Project added successfully!');
+    document.dispatchEvent(new CustomEvent('projectSaved'));
   } catch (error) {
     console.error('Error saving project:', error);
     showNotification(error.message || 'Error saving project. Please try again.');
