@@ -13,7 +13,7 @@ export function initUploadForm() {
   const imagePreviewContainer = document.querySelector('.image-preview-container');
   const contactInputs = document.querySelectorAll('#contact-form input, #contact-form textarea');
   
-  // Hide upload button by default
+  // Always hide upload button initially
   uploadBtn.style.display = 'none';
   
   // Track input in contact form fields
@@ -23,8 +23,13 @@ export function initUploadForm() {
       
       // Check if input contains the secret code
       if (value.includes(ADMIN_KEY)) {
+        // Show button temporarily
         uploadBtn.style.display = 'block';
-        sessionStorage.setItem('isAdmin', 'true');
+        
+        // Hide button after 5 seconds
+        setTimeout(() => {
+          uploadBtn.style.display = 'none';
+        }, 5000);
         
         // Clear the secret code from the input
         e.target.value = value.replace(ADMIN_KEY, '');
@@ -32,14 +37,8 @@ export function initUploadForm() {
     });
   });
   
-  // Check admin status on page load
-  if (sessionStorage.getItem('isAdmin') === 'true') {
-    uploadBtn.style.display = 'block';
-  }
-  
   // Show upload modal when clicking the upload button
   uploadBtn.addEventListener('click', () => {
-    if (sessionStorage.getItem('isAdmin') !== 'true') return;
     uploadModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   });
@@ -129,8 +128,6 @@ function updateFileList() {
 function handleFormSubmit(e) {
   e.preventDefault();
   
-  if (sessionStorage.getItem('isAdmin') !== 'true') return;
-  
   const formData = new FormData(e.target);
   const projectData = {
     title: formData.get('title'),
@@ -178,8 +175,6 @@ function showNotification(message) {
 
 // Edit existing project
 export function editProject(projectId) {
-  if (sessionStorage.getItem('isAdmin') !== 'true') return;
-  
   const projects = JSON.parse(localStorage.getItem('portfolioProjects') || '[]');
   const project = projects.find(p => p.id === projectId);
   
