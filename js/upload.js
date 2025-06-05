@@ -128,6 +128,13 @@ async function handleFormSubmit(e) {
     submitBtn.textContent = 'Uploading...';
     submitBtn.disabled = true;
 
+    // Check if user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      throw new Error('Please sign in to upload projects');
+    }
+
     // Upload images to Supabase Storage
     const imageUrls = await Promise.all(
       files.map(file => uploadImage(file))
@@ -139,7 +146,7 @@ async function handleFormSubmit(e) {
       description: formData.get('description'),
       caseStudy: formData.get('caseStudy'),
       images: imageUrls,
-      user_id: (await supabase.auth.getUser()).data.user.id
+      user_id: user.id // Use the authenticated user's ID
     };
     
     // Validate all required fields
@@ -153,6 +160,9 @@ async function handleFormSubmit(e) {
     if (savedProject) {
       closeUploadModal();
       showNotification('Project added successfully!');
+      
+      // Refresh the gallery to show the new project
+      window.location.reload();
     }
   } catch (error) {
     console.error('Error saving project:', error);
