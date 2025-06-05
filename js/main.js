@@ -7,8 +7,6 @@ import { initAnimations } from './animations.js';
 // DOM elements
 const header = document.querySelector('header');
 const themeToggle = document.querySelector('.theme-toggle');
-const lightIcon = document.querySelector('.toggle-icon.light');
-const darkIcon = document.querySelector('.toggle-icon.dark');
 const menuToggle = document.querySelector('.menu-toggle');
 const navLinks = document.querySelector('.nav-links');
 const navItems = document.querySelectorAll('.nav-links a');
@@ -21,8 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
   if (prefersDarkMode) {
     document.body.setAttribute('data-theme', 'dark');
-    lightIcon.classList.remove('active');
-    darkIcon.classList.add('active');
   }
 
   // Initialize modules
@@ -70,7 +66,7 @@ function initEventListeners() {
       if (sectionId) {
         const section = document.getElementById(sectionId);
         if (section) {
-          const yOffset = -80; // Header height offset
+          const yOffset = -80;
           const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({top: y, behavior: 'smooth'});
         }
@@ -85,12 +81,8 @@ function toggleTheme() {
   
   if (currentTheme === 'dark') {
     document.body.removeAttribute('data-theme');
-    lightIcon.classList.add('active');
-    darkIcon.classList.remove('active');
   } else {
     document.body.setAttribute('data-theme', 'dark');
-    lightIcon.classList.remove('active');
-    darkIcon.classList.add('active');
   }
 }
 
