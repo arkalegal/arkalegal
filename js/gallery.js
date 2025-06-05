@@ -67,17 +67,17 @@ function renderProjects(projectsToRender) {
       }
     });
     
-    // Add click event for project details
-    projectCard.addEventListener('click', () => {
-      if (!e.target.classList.contains('edit-project')) {
-        showProjectDetails(project);
-      }
-    });
-    
     // Add delay for staggered animation
     setTimeout(() => {
       projectCard.classList.add('visible');
     }, index * 100);
+    
+    // Add click event
+    projectCard.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('edit-project')) {
+        showProjectDetails(project);
+      }
+    });
     
     projectsGrid.appendChild(projectCard);
   });
